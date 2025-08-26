@@ -10,6 +10,7 @@ namespace Pokedex.Server.Models
 		public int Weight { get; set; }
 		public List<PokemonTypeWrapper> Types { get; set; } = new();
 		public List<PokemonAbilityWrapper> Abilities { get; set; } = new();
+		public List<PokemonStatWrapper> Stats { get; set; } = new();
 		public PokemonSprites Sprites { get; set; }
 	}
 
@@ -37,5 +38,16 @@ namespace Pokedex.Server.Models
 	{
 		[JsonPropertyName("front_default")]
 		public string FrontDefault { get; set; }
+	}
+	public class PokemonStatWrapper
+	{
+		[JsonPropertyName("base_stat")]
+		public int Base_Stat { get; set; }
+		public PokemonStat Stat { get; set; }
+	}
+
+	public class PokemonStat
+	{
+		public string Name { get; set; }
 	}
 }

@@ -39,7 +39,7 @@ function App() {
     const closeDetail = () => setSelectedPokemon(null);
 
     return (
-        <div className="p-6 bg-gray-100 min-h-screen">
+        <div className="p-6 bg-gray-900 min-h-screen text-white font-mono">
 
             <h1 className="text-3xl font-bold text-center mb-6">Pokédex</h1>
 
@@ -60,7 +60,7 @@ function App() {
                     {filteredPokemon.map(pokemon => (
                         <div
                             key={pokemon.id}
-                            className="bg-white shadow rounded-2xl p-4 flex flex-col items-center"
+                            className="bg-gray-800 text-white shadow rounded-2xl p-4 flex flex-col items-center"
                             onClick={() => openDetail(pokemon.name)}
                         >
                             <img src={pokemon.sprite} alt={pokemon.name} className="w-20 h-20 mb-2" />
@@ -71,27 +71,64 @@ function App() {
             }
 
             {selectedPokemon && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-6 rounded-xl w-80">
-                        <button onClick={closeDetail} className="mb-4 text-red-500 font-bold">Close</button>
-                        <h2 className="text-xl font-bold capitalize">{selectedPokemon.name}</h2>
-                        <img src={selectedPokemon.sprites.front_default} alt={selectedPokemon.name} className="w-32 h-32 my-4" />
-                        <p>
-                            <strong>Height:</strong>
-                            {(() => {
-                                const totalInches = selectedPokemon.height * 3.93701;
-                                const feet = Math.floor(totalInches / 12);
-                                const inches = Math.round(totalInches % 12);
-                                return ` ${feet}'${inches}"`;
-                            })()}
-                        </p>
+                <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center p-4 z-50"
+                    onClick={closeDetail}
+                >
+                    <div
+                        className="bg-gray-900 p-6 rounded-2xl w-full max-w-sm border-4 border-red-600 shadow-lg relative text-white font-mono"
+                        onClick={e => e.stopPropagation()}
+                    >
 
-                        <p>
-                            <strong>Weight:</strong>
-                            {` ${(selectedPokemon.weight * 0.220462).toFixed(1)} lbs`}
-                        </p>
-                        <p><strong>Types:</strong> {selectedPokemon.types.map(t => t.type.name).join(', ')}</p>
-                        <p><strong>Abilities:</strong> {selectedPokemon.abilities.map(a => a.ability.name).join(', ')}</p>
+                        <div className="absolute inset-x-0 top-0 h-8 bg-red-600 rounded-t-xl flex items-center justify-end px-3">
+                            <button
+                                onClick={closeDetail}
+                                className="text-white text-3xl font-bold leading-none hover:text-red-200 transition-colors duration-200"
+                            >
+                                &times;
+                            </button>
+                        </div>
+
+                        <div className="pt-10 pb-2">
+
+                            <h2 className="text-2xl font-bold text-center capitalize mb-4 text-cyan-400">{selectedPokemon.name}</h2>
+                            <div className="bg-gray-800 border-2 border-red-400 rounded-lg p-3 mb-4 flex items-center justify-center h-64">
+                                <img
+                                    src={selectedPokemon.sprites.front_default}
+                                    alt={selectedPokemon.name}
+                                    className="max-w-full max-h-full object-contain h-48"
+                                />
+                            </div>
+
+                            <div className="text-sm border-2 border-red-400 p-3 rounded-lg mb-4">
+                                <div className="flex justify-between items-baseline mb-2">
+                                    <p><strong className="text-red-300">Type:</strong> <span className="capitalize">{selectedPokemon.types.map(t => t.type.name).join(', ')}</span></p>
+                                    <p><strong className="text-red-300">Abilities:</strong> <span className="capitalize">{selectedPokemon.abilities.map(a => a.ability.name).join(', ')}</span></p>
+                                </div>
+                                <div className="flex justify-between items-baseline mb-2">
+                                    <p><strong className="text-red-300">Height:</strong>
+                                        {(() => {
+                                            const totalInches = selectedPokemon.height * 3.93701;
+                                            const feet = Math.floor(totalInches / 12);
+                                            const inches = Math.round(totalInches % 12);
+                                            return ` ${feet}'${inches}"`;
+                                        })()}
+                                    </p>
+                                    <p><strong className="text-red-300">Weight:</strong>{` ${(selectedPokemon.weight * 0.220462).toFixed(1)} lbs`}</p>
+                                </div>
+                            </div>
+
+                            <div className="p-3 border-2 border-red-400 rounded-lg bg-gray-800">
+                                <h3 className="font-bold text-lg text-red-400 text-center mb-2">Base Stats</h3>
+                                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-cyan-300">
+                                    {selectedPokemon.stats.map(stat => (
+                                        <div key={stat.stat.name} className="flex justify-between items-center py-0.5">
+                                            <span className="capitalize">{stat.stat.name.replace('-', ' ')}:</span>
+                                            <span className="font-semibold">{stat.base_stat}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
