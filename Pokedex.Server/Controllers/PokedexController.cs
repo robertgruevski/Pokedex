@@ -4,9 +4,9 @@ using Pokedex.Server.Models;
 
 namespace Pokedex.Server.Controllers
 {
-	[Route("api/[controller]")]
 	[ApiController]
-	public class PokedexController : ControllerBase
+	[Route("api/[controller]")]
+	public class PokedexController : Controller
 	{
 		private readonly string _apiUrl = "https://pokeapi.co/api/v2/pokemon";
 		private readonly HttpClient _httpClient;
@@ -38,6 +38,23 @@ namespace Pokedex.Server.Controllers
 			});
 
 			return Ok(enriched);
+		}
+
+		[HttpGet("{idOrName}")]
+		public async Task<IActionResult> GetPokemonDetails(string idOrName)
+		{
+			var response = await _httpClient.GetAsync($"{_apiUrl}/{idOrName.ToLower()}");
+
+			if (!response.IsSuccessStatusCode)
+				return StatusCode((int)response.StatusCode);
+
+			var content = await response.Content.ReadAsStringAsync();
+
+			// Deserialize only the properties you care about
+			var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+			var pokemon = JsonSerializer.Deserialize<PokemonDetailResponse>(content, options);
+
+			return Ok(pokemon);
 		}
 	}
 }
